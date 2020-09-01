@@ -1,0 +1,23 @@
+{
+  "name": "binance-listing",
+  "version": "1.0.0",
+  "description": "check new listing of binance",
+  "main": "get-exchange-info.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dotrungkien/binance-listing.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dotrungkien/binance-listing/issues"
+  },
+  "homepage": "https://github.com/dotrungkien/binance-listing#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "request": "^2.88.2"
+  }
+}

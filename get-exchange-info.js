@@ -1,6 +1,5 @@
 require('dotenv').config();
 const request = require('request');
-const { send } = require('process');
 fs = require('fs');
 
 const getLocalMarketData = () => {
