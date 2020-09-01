@@ -1,4 +1,6 @@
+require('dotenv').config();
 const request = require('request');
+const { send } = require('process');
 fs = require('fs');
 
 const getLocalMarketData = () => {
@@ -12,6 +14,26 @@ const saveMarketData = symbols => {
       return console.log(err);
     }
   });
+};
+
+// curl -X POST -H "X-ChatWorkToken: 92b891ee2edef5c24527ca0890a133df" -d "body=Hello+ChatWork%21" "https://api.chatwork.com/v2/rooms/167988546/messages"
+
+const sendCW = message => {
+  const options = {
+    method: 'POST',
+    url: 'https://api.chatwork.com/v2/rooms/167988546/messages',
+    headers: {
+      'X-ChatWorkToken': process.env.CW_TOKEN,
+    },
+    form: { body: message },
+  };
+
+  function callback(error, response, body) {
+    if (!error && response.statusCode == 200) {
+      console.log(body);
+    }
+  }
+  request.post(options, callback);
 };
 
 const getNewData = (currentArr, newArr) => {
@@ -41,8 +63,8 @@ const main = () => {
         console.log('no new symbol');
       } else {
         console.log('new symbol found!');
-        console.log(newSymbols.join(' '));
-        //cw here
+        let newSymbolsString = newSymbols.join(' ');
+        sendCW(`[To:899965] new symbol found: ${newSymbolsString}`);
         saveMarketData(symbols);
       }
     }
