@@ -15,8 +15,6 @@ const saveMarketData = symbols => {
   });
 };
 
-// curl -X POST -H "X-ChatWorkToken: 92b891ee2edef5c24527ca0890a133df" -d "body=Hello+ChatWork%21" "https://api.chatwork.com/v2/rooms/167988546/messages"
-
 const sendCW = message => {
   const options = {
     method: 'POST',
