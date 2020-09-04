@@ -40,6 +40,35 @@ func sendCW(message string) {
 	fmt.Println("response Body:", string(body))
 }
 
+func readSymbols() ([]string, error) {
+	jsonData, err := ioutil.ReadFile("go-symbol.json")
+	if err != nil {
+		return nil, err
+	}
+	currentSymbols := []string{}
+	err = json.Unmarshal(jsonData, &currentSymbols)
+	if err != nil {
+		return nil, err
+	}
+	return currentSymbols, nil
+}
+
+func writeSymbols(symbols []string) {
+	jsonData, err := json.Marshal(symbols)
+	check(err)
+	err = ioutil.WriteFile("go-symbol.json", jsonData, 0644)
+	check(err)
+}
+
+func inslice(n string, h []string) bool {
+	for _, v := range h {
+		if v == n {
+			return true
+		}
+	}
+	return false
+}
+
 func main() {
 	url := "https://api.binance.com/api/v3/exchangeInfo"
 	resp, err := http.Get(url)
@@ -53,21 +82,29 @@ func main() {
 	json.Unmarshal(body, &result)
 	symbols := result["symbols"].([]interface{})
 
-	// newSymbols := []string{}
+	newSymbols := []string{}
 
-	for _, s := range symbols[:4] {
+	for _, s := range symbols {
 		symbolData := s.(map[string]interface{})
-		fmt.Println(symbolData["symbol"])
-		// newSymbols = append(newSymbols, string())
+		newSymbols = append(newSymbols, symbolData["symbol"].(string))
 	}
 
-	// err = ioutil.WriteFile("go-symbol.json", body, 0644)
-	// check(err)
+	currentSymbols, err := readSymbols()
+	check(err)
 
-	// fmt.Println(result2["symbol"])
+	isNewFound := false
 
-	// for _, val := range symbols[:4] {
-	// }
-	// fmt.Printf("%s", body)
+	for _, symbol := range newSymbols {
+		if !inslice(symbol, currentSymbols) {
+			fmt.Println("New Pair Listing Found: ", symbol)
+			sendCW(symbol)
+			isNewFound = true
+		}
+	}
 
+	if isNewFound {
+		writeSymbols(newSymbols)
+	} else {
+		fmt.Println("No new pair found")
+	}
 }
