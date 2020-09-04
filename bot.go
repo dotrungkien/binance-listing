@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func checkError(err error) {
+func check(err error) {
 	if err != nil {
 		panic(err)
 	}
@@ -18,19 +19,19 @@ func checkError(err error) {
 
 func sendCW(message string) {
 	err := godotenv.Load()
-	checkError((err))
+	check((err))
 
 	cwToken := os.Getenv("CW_TOKEN")
 	client := &http.Client{}
-	checkError((err))
+	check((err))
 
 	request, err := http.NewRequest("POST", "https://api.chatwork.com/v2/rooms/199044484/messages?body="+url.QueryEscape(message), nil)
-	checkError((err))
+	check((err))
 
 	request.Header.Set("X-ChatworkToken", cwToken)
 
 	resp, err := client.Do(request)
-	checkError((err))
+	check((err))
 
 	defer resp.Body.Close()
 
@@ -40,21 +41,33 @@ func sendCW(message string) {
 }
 
 func main() {
-	// url := "https://api.binance.com/api/v3/exchangeInfo"
-	// resp, err := http.Get(url)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	url := "https://api.binance.com/api/v3/exchangeInfo"
+	resp, err := http.Get(url)
+	check(err)
 
-	// fmt.Println(resp)
+	body, err := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+	check(err)
 
-	// body, err := ioutil.ReadAll(resp.Body)
-	// resp.Body.Close()
+	var result map[string]interface{}
+	json.Unmarshal(body, &result)
+	symbols := result["symbols"].([]interface{})
 
-	// if err != nil {
-	// 	panic(err)
+	// newSymbols := []string{}
+
+	for _, s := range symbols[:4] {
+		symbolData := s.(map[string]interface{})
+		fmt.Println(symbolData["symbol"])
+		// newSymbols = append(newSymbols, string())
+	}
+
+	// err = ioutil.WriteFile("go-symbol.json", body, 0644)
+	// check(err)
+
+	// fmt.Println(result2["symbol"])
+
+	// for _, val := range symbols[:4] {
 	// }
 	// fmt.Printf("%s", body)
-	sendCW("hi Kien")
 
 }
