@@ -1,21 +1,21 @@
 {
-  "name": "binance-listing",
+  "name": "token-listing-tracker",
   "version": "1.0.0",
-  "description": "check new listing of binance",
+  "description": "Track new listing of tokens in Exchange",
   "main": "get-exchange-info.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dotrungkien/binance-listing.git"
+    "url": "git+https://github.com/dotrungkien/token-listing-tracker.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dotrungkien/binance-listing/issues"
+    "url": "https://github.com/dotrungkien/token-listing-tracker/issues"
   },
-  "homepage": "https://github.com/dotrungkien/binance-listing#readme",
+  "homepage": "https://github.com/dotrungkien/token-listing-tracker#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
     "request": "^2.88.2"
