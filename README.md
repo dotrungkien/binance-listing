@@ -1,2 +1,3 @@
-# binance-listing
-check new listing of binance
+# Token Listing Tracker
+
+Track token listing on any Exchange.
