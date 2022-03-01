@@ -2,12 +2,16 @@ require('dotenv').config();
 const request = require('request');
 fs = require('fs');
 
+const { Telegraf } = require('telegraf');
+
+const bot = new Telegraf(process.env.TELE_KEY);
+
 const getLocalMarketData = () => {
   const data = fs.readFileSync('symbols.json');
   return JSON.parse(data);
 };
 
-const saveMarketData = symbols => {
+const saveMarketData = (symbols) => {
   fs.writeFile('symbols.json', JSON.stringify(symbols), function (err, data) {
     if (err) {
       return console.log(err);
@@ -15,28 +19,14 @@ const saveMarketData = symbols => {
   });
 };
 
-const sendCW = message => {
-  const options = {
-    method: 'POST',
-    url: 'https://api.chatwork.com/v2/rooms/167988546/messages',
-    headers: {
-      'X-ChatWorkToken': process.env.CW_TOKEN,
-    },
-    form: { body: message },
-  };
-
-  function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
-      console.log(body);
-    }
-  }
-  request.post(options, callback);
+const sendMessage = (message) => {
+  bot.telegram.sendMessage(process.env.CHAT_ID, message);
 };
 
 const getNewData = (currentArr, newArr) => {
   if (!currentArr || !newArr) return [];
   let diff = [];
-  newArr.forEach(symbol => {
+  newArr.forEach((symbol) => {
     if (!currentArr.includes(symbol)) {
       diff.push(symbol);
     }
@@ -49,7 +39,7 @@ const main = () => {
   request.get(url, (error, response, body) => {
     if (response.statusCode === 200) {
       let symbols = [];
-      JSON.parse(body).symbols.forEach(s => {
+      JSON.parse(body).symbols.forEach((s) => {
         const symbol = s.symbol;
         if (symbol.slice(-4) === 'USDT') symbols.push(symbol);
       });
@@ -61,7 +51,7 @@ const main = () => {
       } else {
         console.log('new symbol found!');
         let newSymbolsString = newSymbols.join(' ');
-        sendCW(`[To:899965] new symbol found: ${newSymbolsString}`);
+        sendMessage(`New symbol found: ${newSymbolsString}`);
         saveMarketData(symbols);
       }
     }
